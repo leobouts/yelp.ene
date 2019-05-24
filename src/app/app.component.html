@@ -1,0 +1,125 @@
+<head>
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+</head>
+<body>
+  <div class="parent" *ngIf="searchPageViewActive">
+    <mat-progress-bar mode="query" *ngIf="progressBarActive"></mat-progress-bar>
+    <br>
+    <img src="assets/yelpene_logo.svg" class="logo">
+      <mat-form-field class="example-form">
+        <input matInput placeholder="lets search the yelp dataset" #input value="">
+      </mat-form-field>
+    <div class="scale-down">
+      <mat-button-toggle-group #group = "matButtonToggleGroup">
+        <mat-button-toggle value="name">
+          By name
+          <mat-icon> store_mall_directory</mat-icon>
+        </mat-button-toggle>
+        <mat-button-toggle value="categories">
+          By category
+          <mat-icon>local_offer</mat-icon>
+        </mat-button-toggle>
+        <mat-button-toggle value="attributes">
+          By Tips
+          <mat-icon>rate_review</mat-icon>
+        </mat-button-toggle>
+        <mat-button-toggle value="reviews">
+          By phrase queries
+          <mat-icon>chat</mat-icon>
+        </mat-button-toggle>
+        <mat-button-toggle value="boolean" >
+          Custom Boolean combination
+          <mat-icon>note_add</mat-icon>
+        </mat-button-toggle>
+      </mat-button-toggle-group>
+    </div>
+    <button mat-button class = "button" (click)="search(group.value,input.value)">
+      <mat-icon>search</mat-icon>
+      Search
+    </button>
+    <mat-card class="search-card">
+      Available fields for <strong><em>CUSTOM</em></strong> boolean queries: name, categories, attributes, reviews
+      <br/><br/>example: name:john and reviews:sesame or not name:pizza</mat-card>
+  </div>
+  <div *ngIf="resultsPageViewActive">
+    <div fxLayout="row" fxLayoutAlign="center center" class="content">
+      <mat-card class="card" >
+        <mat-card-title fxLayout.gt-xs="row" fxLayout.xs="column" class="card-title">
+          <h1>Search Results</h1>
+        </mat-card-title>
+        <mat-card-content>
+          <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+
+            <!--- Note that these columns can be defined in any order.
+                  The actual rendered columns are set as a property on the row definition" -->
+
+            <!-- Position Column -->
+            <ng-container matColumnDef="retrievedPosition">
+              <th mat-header-cell *matHeaderCellDef> Retrieved No.</th>
+              <td mat-cell *matCellDef="let element"> {{element.retrievedPosition}} </td>
+            </ng-container>
+
+            <!-- Name Column -->
+            <ng-container matColumnDef="name">
+              <th mat-header-cell *matHeaderCellDef> Business Name </th>
+              <td mat-cell *matCellDef="let element" [innerHTML]="element.name | HighlightSearch: keywords"></td>
+            </ng-container>
+
+            <!-- location Column -->
+            <ng-container matColumnDef="location">
+              <th mat-header-cell *matHeaderCellDef> Location </th>
+              <td mat-cell *matCellDef="let element"> {{element.location}} </td>
+            </ng-container>
+
+            <!-- stars Column -->
+            <ng-container matColumnDef="stars">
+              <th mat-header-cell *matHeaderCellDef> Stars </th>
+              <td mat-cell *matCellDef="let element"> {{element.stars}} </td>
+            </ng-container>
+
+            <!-- ID Column -->
+            <ng-container matColumnDef="businessId">
+              <th mat-header-cell *matHeaderCellDef> ID </th>
+              <td mat-cell *matCellDef="let element"> {{element.businessId}} </td>
+            </ng-container>
+
+            <!-- clicks Column -->
+            <ng-container matColumnDef="clicks">
+              <th mat-header-cell *matHeaderCellDef> Clicks </th>
+              <td mat-cell *matCellDef="let element"> {{element.clicks}} </td>
+            </ng-container>
+
+            <!-- reviewCount Column -->
+            <ng-container matColumnDef="reviewCount">
+              <th mat-header-cell *matHeaderCellDef> No. of Reviews <br/> (click to open the full reviews list) </th>
+              <td mat-cell *matCellDef="let element">
+                <button mat-button class="reviews-button" (click)="openDialog(element.businessId,element.name)">{{element.reviewCount}} </button>
+              </td>
+            </ng-container>
+
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+          </table>
+          <div class="order">
+            <h2>Order By</h2>
+            <mat-form-field class="select">
+              <mat-label>Select an option</mat-label>
+              <mat-select [(value)]="selected" panelClass="example-panel-red" (selectionChange)="orderChanged()">
+                <mat-option value="retrievalNumber">Retrieval Number</mat-option>
+                <mat-option value="starRating">Star Rating</mat-option>
+                <mat-option value="clicks">Click-Through</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+        </mat-card-content>
+      </mat-card>
+      <div class="buttonParent">
+        <button mat-button class = "button" (click)="returnToSearchPage()">
+          <mat-icon>arrow_back_ios</mat-icon>
+          Return to the search page
+        </button>
+      </div>
+    </div>
+  </div>
+</body>

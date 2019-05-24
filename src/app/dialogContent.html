@@ -1,0 +1,18 @@
+<h2 mat-dialog-title>Reviews of {{this.businessName}}</h2>
+<mat-dialog-content class="mat-typography">
+<div>
+  <ng-container *ngFor="let review of this.finalReviewData[0].series">
+    <strong>Date: </strong><em>{{review.date}}</em>
+    <br/>
+    <strong>Stars: </strong><em>{{review.stars}}</em>
+    <br/>
+    <strong>User wrote:</strong>
+    <div innerHTML="{{review.text | HighlightSearch: keywords}}"></div>
+    <br/>
+    <br/>
+  </ng-container>
+</div>
+</mat-dialog-content>
+<mat-dialog-actions align="center">
+  <button mat-dialog-close class="dialogue">Return</button>
+</mat-dialog-actions>
